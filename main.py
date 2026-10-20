@@ -1,4 +1,6 @@
+import ast
 import random
+from fractions import Fraction
 
 score = 0
 lifes = 3
@@ -32,6 +34,47 @@ affirmations = ['Nice work', 'Keep it up!', 'Noice', 'You can do it!']
 bosswins = ['YOO NOICE JOB', 'DANG BRO NICE', '👍👍👍👍👍']
 stop_words= ['STOP', 'DONE', 'SCORE', 'OVER', 'NO MORE']
 
+
+def arithmetic_value(expression):
+    if len(expression) > 200:
+        raise ValueError('Expression is too long')
+
+    tree = ast.parse(expression, mode='eval')
+    if sum(1 for _ in ast.walk(tree)) > 100:
+        raise ValueError('Expression is too complex')
+
+    def calculate(node):
+        if isinstance(node, ast.Expression):
+            return calculate(node.body)
+        if isinstance(node, ast.Constant) and type(node.value) is int:
+            return Fraction(node.value)
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.UAdd, ast.USub)):
+            value = calculate(node.operand)
+            return value if isinstance(node.op, ast.UAdd) else -value
+        if isinstance(node, ast.BinOp):
+            left = calculate(node.left)
+            right = calculate(node.right)
+            if isinstance(node.op, ast.Add):
+                return left + right
+            if isinstance(node.op, ast.Sub):
+                return left - right
+            if isinstance(node.op, ast.Mult):
+                return left * right
+            if isinstance(node.op, ast.Div):
+                return left / right
+        raise ValueError('Only basic arithmetic is allowed')
+
+    return calculate(tree)
+
+
+def answer_is_correct(answer, question, allow_expressions):
+    try:
+        answer_value = arithmetic_value(answer) if allow_expressions else Fraction(int(answer))
+        return int(answer_value) == int(arithmetic_value(question))
+    except (SyntaxError, ValueError, TypeError, ZeroDivisionError, RecursionError):
+        return False
+
+
 # Main loop
 while True:
     if secret == True:
@@ -43,7 +86,7 @@ while True:
             answer = input('BE EXTRA CAREFUL THIS IS THE BOSS ROUND' + ' WHAT IS ' + question + "?!?!?!? ")
 
             # Life system
-            if int(eval(answer)) == int(eval(question)):
+            if answer_is_correct(answer, question, allow_expressions=True):
                 print(random.choice(bosswins))
                 score += 5
                 round += 1
@@ -64,7 +107,7 @@ while True:
                 break
 
             # Life system
-            if int(eval(answer)) == int(eval(question)):
+            if answer_is_correct(answer, question, allow_expressions=True):
                 print(random.choice(affirmations))
                 score += 1
                 round +=1
@@ -83,7 +126,7 @@ while True:
                 answer = input('BE EXTRA CAREFUL THIS IS THE BOSS ROUND' + ' WHAT IS ' + question + "?!?!?!? ")
         
                 # Life system
-                if int(answer) == int(eval(question)):
+                if answer_is_correct(answer, question, allow_expressions=False):
                     print(random.choice(bosswins))
                     score += 5
                     round += 1
