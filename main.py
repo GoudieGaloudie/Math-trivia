@@ -117,6 +117,27 @@ while True:
                 else:
                     print('You lost to the boss!')
                     break    
+        else:
+            a = random.randint(lower_bound, upper_bound)
+            b = random.randint(lower_bound, upper_bound)
+            operator = random.choice(operations)
+
+            question = str(a) + operator + str(b)
+            answer = input('what is ' + question + "? ")
+
+            if answer.upper() in stop_words:
+                break
+
+            if int(answer) == int(eval(question)):
+                print(random.choice(affirmations))
+                score += 1
+                round += 1
+            else:
+                lifes -= 1
+                round += 1
+                print('You lost a life! You have ' + str(lifes) + ' lifes left.')
+                if lifes == 0:
+                    break
 if score < 27:
     print('HA u lost to my first try XD but you did get ' + str(score) + ' points')
 else:
