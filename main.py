@@ -1,5 +1,33 @@
 import random
 
+while True:
+    print(r"""
++-------------------------------+
+|          MATH TRIVIA          |
++-------------------------------+
+|  1. Start game                |
+|  2. Instructions              |
+|  3. Quit                      |
++-------------------------------+
+""")
+    menu_choice = input("Choose an option: ").strip()
+
+    if menu_choice == "1":
+        break
+    elif menu_choice == "2":
+        print(
+            "\nAnswer the math questions to earn points. "
+            "You have 3 lives, and every 5th round is a boss round.\n"
+            "Enter STOP, DONE, SCORE, OVER, or NO MORE to end the game.\n"
+            "Choose a lower and upper number bound when the game starts.\n"
+        )
+        input("Press Enter to return to the menu...")
+    elif menu_choice == "3":
+        print("Goodbye!")
+        raise SystemExit
+    else:
+        print("Please choose 1, 2, or 3.\n")
+
 score = 0
 lifes = 3
 round = 1
