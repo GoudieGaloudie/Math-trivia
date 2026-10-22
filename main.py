@@ -46,8 +46,14 @@ while True:
         secret = True
         continue
 
-    lower_bound = int(lower_input)
-    upper_bound = int(upper_input)
+    try:  
+        lower_bound = int(lower_input)
+        upper_bound = int(upper_input)
+        if upper_bound < lower_bound:
+            continue
+    except:
+        print("Error, input valid upper and lower bounds")
+        continue
     break
 
 if lower_bound < 1 or upper_bound < 10:
@@ -55,9 +61,10 @@ if lower_bound < 1 or upper_bound < 10:
     upper_bound = 1001
 
 operations = ['+', '*', '-', '/']
-affirmations = ['Nice work', 'Keep it up!', 'Noice', 'You can do it!']
+affirmations = ['Nice work', 'Keep it up!', 'Noice', 'You can do it!', 'Excellent!', 'You must be Einstein!']
 bosswins = ['YOO NOICE JOB', 'DANG BRO NICE', '👍👍👍👍👍']
 stop_words= ['STOP', 'DONE', 'SCORE', 'OVER', 'NO MORE']
+allowed_set = {"0","1","2","3","4","5","6","7","8","9","+","-","/","*","(",")"}
 
 # Main loop
 while True:
@@ -68,6 +75,10 @@ while True:
 
             question = str(a) + '*' + str(b)
             answer = input('BE EXTRA CAREFUL THIS IS THE BOSS ROUND' + ' WHAT IS ' + question + "?!?!?!? ")
+
+            if set(answer) not in allowed_set:
+                print("Please only enter valid answers!")
+                continue
 
             # Life system
             if int(eval(answer)) == int(eval(question)):
@@ -85,6 +96,11 @@ while True:
 
             question = str(a) + operator + str(b)
             answer = input('what is ' + question + "? ")
+
+            
+            if set(answer) not in allowed_set:
+                print("Please only enter valid answers!")
+                continue
 
             # Checks if its a stop word if so it stops
             if answer.upper() in stop_words:
